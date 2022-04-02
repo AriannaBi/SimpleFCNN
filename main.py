@@ -15,12 +15,6 @@ def read_data_locally():
     # timestamp = table.pop('timestamp')
     # print(timestamp)
 
-    # A DataFrame as an array
-    numeric_feature_names = ['timestamp', 'X', 'Y', 'Z', 'Sleep', 'Quality']
-    numeric_features = table[numeric_feature_names]
-    # print(numeric_features.head())
-    # tensor = tf.convert_to_tensor(numeric_features)
-    # print(tensor)
 
     # creating DataFrame
     df = pd.DataFrame(table)
@@ -31,21 +25,21 @@ def read_data_locally():
     # print(df)
     # write to csv file the date (I want to temporally visualize it)
     with open('original.csv', 'w') as csvfile:
-        fieldnames = ['Date']
+        fieldnames = ['Date','X','Y','Z']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for i in range(0, 50):
-            writer.writerow({'Date': timestamp_col[i]})
+            writer.writerow({'Date': df['timestamp'][i], 'X': df['X'][i] , 'Y': df['Y'][i], 'Z':df['Z'][i]})
 
     # downsampling
-    minutes = df.resample('10Min', on='timestamp')
-    # print(minutes)
+    df = df.resample('10s', on='timestamp').first()
+    # print(df)
     with open('modified.csv', 'w') as csvfile:
-        fieldnames = ['Date']
+        fieldnames = ['Date', 'X', 'Y', 'Z']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for i in range(0, 50):
-            writer.writerow({'Date': df['timestamp'][i]})
+            writer.writerow({'Date': df['timestamp'][i], 'X': df['X'][i] , 'Y': df['Y'][i], 'Z':df['Z'][i]})
 
 
 
