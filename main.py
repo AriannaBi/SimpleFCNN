@@ -17,8 +17,8 @@ def type_file(name):
         return 0, 5
     return -1
 
-def read_data_locally(list_file):
-    for name_file in list_file:
+def read_data_locally(files):
+    for name_file in files:
         # DataFrame
         table = pd.read_parquet(name_file, engine='pyarrow')
 
@@ -94,10 +94,10 @@ def read_data_locally(list_file):
 if __name__ == "__main__":
     try:
         # reading a list of files
-        list_files = ['./files/ACC_22.parquet', './files/BVP_41.parquet']
-        # list_files = ['./files/BVP_41.parquet']
-        # list_files = ['./files/TEMP_25.parquet']
-        # list_files = ['./files/EDA_02.parquet']
-        read_data_locally(list_files)
+        # files = ['./files/ACC_22.parquet']
+        files = ['./files/BVP_41.parquet']
+        # files = ['./files/TEMP_25.parquet']
+        # files = ['./files/EDA_02.parquet']
+        read_data_locally(files)
     except Exception as message:
         print(f"MY FAULT")
