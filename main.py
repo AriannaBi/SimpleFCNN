@@ -4,16 +4,17 @@ import numpy as np
 import csv
 import torch
 
+
 def type_file(name):
-    match name.split('/')[2][:3]:
-        case 'EDA':
-            return 0, 0
-        case 'BVP':
-            return '250ms', 1
-        case 'ACC':
-            return '250ms', 2
-        case 'TEM':
-            return 0, 5
+    name_file = name.split('/')[2][:3]
+    if name_file == 'EDA':
+        return 0, 0
+    elif name_file == 'BVP':
+        return '250ms', 1
+    elif name_file == 'ACC':
+        return '250ms', 2
+    elif name_file == 'TEM':
+        return 0, 5
     return -1
 
 def read_data_locally(list_file):
@@ -35,19 +36,20 @@ def read_data_locally(list_file):
             return -1
 
         # RESAMPLE the tensor
-        # if 0 it's already 4Hz, otherwise it's either '250ms'
+        # 0 means it's already 4Hz, otherwise resample with '250ms'
         if arr_type[0] != 0:
             print("resample stage")
             df = df.resample(arr_type[0], on='timestamp').mean()
             df = df.reset_index()
+
 
         # create 6 matrices with rows and cols ( create TENSOR)
         # i - z axis            6
         # j - y axis (rows)     df.shape[0]/2400 (how many windows)
         # k - x axis (cols)     2400
         number_rows = int(df.shape[0] // 2400)
-        tensor = torch.empty((6, number_rows, 2400), dtype=torch.float64)
-        print(tensor)
+        tensor = torch.zeros((6, number_rows, 2400), dtype=torch.float64)
+
         # FILL the tensor
         # if not ACC, fill the #st matrix
         if arr_type[1] != 2:
@@ -62,32 +64,14 @@ def read_data_locally(list_file):
         # otherwise fill ACC_X, ACC_Y, ACC_Z
         elif arr_type[1] == 2:
             print("fill tensor stage of ACC")
-            # list_axis_ACC = ['X', 'Y', 'Z']
-            position_element_in_column = 0
-            # for axis in list_axis_ACC:
-            #     print(axis)
-                # position_element_in_column = 0
-                # for j in range(number_rows):
-                #     for k in range(2400):
-                #         tensor[arr_type[2]][j][k] = df[axis][position_element_in_column]
-                #         position_element_in_column += 1
-            # print(tensor)
-
-            # position_element_in_column = 0
-            # for j in range(df.shape[0]):
-            #     for k in range(2400):
-            #         position_element_in_column += 1
-            #         tensor[arr_type[3]][j][k] = df['Y'][position_element_in_column]
-            #         # print(tensor[arr_type[3]][j][k])
-            #
-            # position_element_in_column = 0
-            # for j in range(df.shape[0]):
-            #     for k in range(2400):
-            #         position_element_in_column += 1
-            #         tensor[arr_type[4]][j][k] = df['Z'][position_element_in_column]
-            #         # print(tensor[arr_type[4]][j][k])
-
-
+            list_axis_ACC = ['X', 'Y', 'Z']
+            for idx, axis in enumerate(list_axis_ACC):
+                position_element_in_column = 0
+                for j in range(number_rows):
+                    for k in range(2400):
+                        tensor[idx+2][j][k] = df[axis][position_element_in_column]
+                        position_element_in_column += 1
+            print(tensor)
 
 
         # # for BVP
@@ -110,7 +94,7 @@ def read_data_locally(list_file):
 if __name__ == "__main__":
     try:
         # reading a list of files
-        list_files = ['./files/ACC_22.parquet']
+        list_files = ['./files/ACC_22.parquet', './files/BVP_41.parquet']
         # list_files = ['./files/BVP_41.parquet']
         # list_files = ['./files/TEMP_25.parquet']
         # list_files = ['./files/EDA_02.parquet']
