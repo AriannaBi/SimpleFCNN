@@ -7,14 +7,14 @@ The project in Data Augmentation folder contains the code to read the folders of
 -- datasets: contain the code to read the sessions and create a datase;
 
 - Files:
--- EDA_model.py contain the code to train the EDA network model
--- BVP_model.py contain the code to train the BVP network model
--- ACC_model.py contain the code to train the ACC network model
--- TEM_model.py contain the code to train the TEM network model
+- - EDA_model.py contain the code to train the EDA network model
+- - BVP_model.py contain the code to train the BVP network model
+- - ACC_model.py contain the code to train the ACC network model
+- - TEM_model.py contain the code to train the TEM network model
 
--- augment_data.py is the code that takes the dataset and augment it of 50\%.
+- - augment_data.py is the code that takes the dataset and augment it of 50\%.
 
--- DataAugmentation_TimeseriesData.py is the adapt code of Um. 
+- - DataAugmentation_TimeseriesData.py is the adapt code of Um. 
 
 
 To create the dataset, run  " python3 datasets/create_datasets.py ";
